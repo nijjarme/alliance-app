@@ -40,6 +40,26 @@
       border-radius: 6px;
       margin-right: 0.5rem;
     }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 300px;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+    }
   </style>
 </head>
 <body>
@@ -53,10 +73,23 @@
       <p>Select a truck from the list</p>
     </div>
     <div style="margin-top: 20px;">
-      <button class="btn">Add Customer</button>
+      <button class="btn" onclick="openModal()">Add Customer</button>
       <button class="btn">Edit</button>
     </div>
   </main>
+
+  <div id="modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h3>Add Customer</h3>
+      <input id="newId" placeholder="Truck ID" />
+      <input id="newParent" placeholder="Parent" />
+      <input id="newVin" placeholder="VIN" />
+      <input id="newLicense" placeholder="License Plate" />
+      <input id="newMake" placeholder="Make/Model" />
+      <button class="btn" onclick="saveCustomer()">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
 
   <script>
     const customers = [
@@ -68,18 +101,23 @@
     const details = document.getElementById('details');
     let selectedId = null;
 
-    customers.forEach(c => {
-      const div = document.createElement('div');
-      div.className = 'customer';
-      div.textContent = c.id;
-      div.onclick = () => {
-        selectedId = c.id;
-        update();
-      };
-      list.appendChild(div);
-    });
+    function renderList() {
+      list.innerHTML = '';
+      customers.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'customer';
+        if (c.id === selectedId) div.classList.add('selected');
+        div.textContent = c.id;
+        div.onclick = () => {
+          selectedId = c.id;
+          updateDetails();
+          renderList();
+        };
+        list.appendChild(div);
+      });
+    }
 
-    function update() {
+    function updateDetails() {
       const customer = customers.find(c => c.id === selectedId);
       details.innerHTML = `
         <p><strong>Truck ID:</strong> ${customer.id}</p>
@@ -88,13 +126,30 @@
         <p><strong>License Plate:</strong> ${customer.license}</p>
         <p><strong>Make/Model:</strong> ${customer.make}</p>
       `;
-      [...list.children].forEach(div => {
-        div.className = 'customer';
-        if (div.textContent === customer.id) {
-          div.classList.add('selected');
-        }
-      });
     }
+
+    function openModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function saveCustomer() {
+      const newId = document.getElementById('newId').value.trim();
+      const newParent = document.getElementById('newParent').value.trim();
+      const newVin = document.getElementById('newVin').value.trim();
+      const newLicense = document.getElementById('newLicense').value.trim();
+      const newMake = document.getElementById('newMake').value.trim();
+      if (!newId || !newVin) return alert("Truck ID and VIN are required.");
+
+      customers.push({ id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake });
+      closeModal();
+      renderList();
+    }
+
+    renderList();
   </script>
 </body>
 </html>

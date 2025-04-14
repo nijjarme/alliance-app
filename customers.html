@@ -101,7 +101,13 @@
     <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
   </div>
 
-  <div class="main-content">
+  
+<div style="padding: 1rem; display: flex; gap: 1rem;">
+  <input id="searchBox" placeholder="Search trucks..." oninput="renderList()" style="flex: 1; padding: 0.5rem;" />
+  <button class="btn" onclick="exportCSV()">Export CSV</button>
+  <input type="file" id="importFile" onchange="importCSV()" />
+</div>
+<div class="main-content">
     <div class="sidebar" id="list"></div>
     <div class="details">
       <h2>Customer Details</h2>
@@ -263,6 +269,81 @@
     }
 
     renderList();
-  </script>
+  
+function exportCSV() {
+  let csv = "Truck ID,Parent,VIN,License,Make\n";
+  customers.forEach(c => {
+    csv += `${c.id},${c.parent},${c.vin},${c.license},${c.make}\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "customers.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importCSV() {
+  const input = document.getElementById('importFile');
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split("\n").slice(1);
+    lines.forEach(line => {
+      const [id, parent, vin, license, make] = line.split(",");
+      if (!id || customers.some(c => c.id === id)) return;
+      if (!parents.includes(parent)) parents.push(parent);
+      customers.push({ id, parent, vin, license, make });
+    });
+    localStorage.setItem("customers", JSON.stringify(customers));
+    localStorage.setItem("parents", JSON.stringify(parents));
+    renderList();
+  };
+  reader.readAsText(file);
+}
+
+function deleteTruck(index) {
+  const truck = customers[index];
+  if (!confirm("Delete truck " + truck.id + "?")) return;
+  const pass = prompt("Enter super password:");
+  if (pass !== "admin123") {
+    alert("❌ Incorrect super password.");
+    return;
+  }
+  customers.splice(index, 1);
+  localStorage.setItem("customers", JSON.stringify(customers));
+  selectedId = null;
+  renderList();
+  updateDetails();
+}
+
+function renderList() {
+  const filter = document.getElementById("searchBox")?.value.toLowerCase() || "";
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  parents.forEach(p => {
+    const pDiv = document.createElement('div');
+    pDiv.className = 'parent';
+    pDiv.textContent = p;
+    list.appendChild(pDiv);
+    customers.filter(c => c.parent === p && (c.id + c.vin + c.license + c.make).toLowerCase().includes(filter))
+      .forEach((c, index) => {
+        const div = document.createElement('div');
+        div.className = 'child';
+        if (c.id === selectedId) div.classList.add('selected');
+        div.textContent = "• " + c.id;
+        div.onclick = () => {
+          selectedId = c.id;
+          updateDetails();
+          renderList();
+        };
+        list.appendChild(div);
+      });
+  });
+}
+
+</script>
 </body>
 </html>

@@ -33,8 +33,12 @@
 
   <div class="container">
     <h2>Inventory</h2>
-    <label for="threshold">Low Stock Threshold: </label>
-    <input type="number" id="threshold" value="3" style="width: 60px;" onchange="renderInventory()" />
+    <div>
+      <label>Low Stock Threshold: </label>
+      <input type="number" id="threshold" value="3" style="width: 60px;" onchange="renderInventory()" />
+      <input type="text" id="search" placeholder="Search..." oninput="renderInventory()" style="margin-left: 1rem;" />
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+    </div>
     <table>
       <thead>
         <tr>
@@ -47,6 +51,14 @@
         </tr>
       </thead>
       <tbody id="inventory-body"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"><strong>Totals:</strong></td>
+          <td id="totalQty"></td>
+          <td id="totalCost"></td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
     </table>
     <button class="btn" onclick="openModal('add')">Add Item</button>
   </div>
@@ -73,9 +85,13 @@
 
     function renderInventory() {
       const threshold = parseInt(document.getElementById('threshold').value) || 3;
+      const filter = document.getElementById('search').value.toLowerCase();
       const tbody = document.getElementById('inventory-body');
+      let totalQty = 0, totalCost = 0;
+
       tbody.innerHTML = '';
       items.forEach((item, index) => {
+        if (!item.name.toLowerCase().includes(filter)) return;
         const status = item.qty === 0 ? 'out' : item.qty <= threshold ? 'low' : 'ok';
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -89,8 +105,13 @@
             <button class="btn" onclick="deleteItem(${index})">Delete</button>
           </td>
         `;
+        totalQty += item.qty;
+        totalCost += item.qty * item.cost;
         tbody.appendChild(tr);
       });
+
+      document.getElementById('totalQty').textContent = totalQty;
+      document.getElementById('totalCost').textContent = `$${totalCost.toFixed(2)}`;
       localStorage.setItem("inventory", JSON.stringify(items));
     }
 
@@ -143,6 +164,19 @@
         items.splice(index, 1);
         renderInventory();
       }
+    }
+
+    function exportCSV() {
+      const headers = ["Item Name", "Description", "Quantity", "Cost"];
+      const rows = items.map(i => [i.name, i.desc, i.qty, i.cost.toFixed(2)]);
+      const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "inventory.csv";
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     renderInventory();

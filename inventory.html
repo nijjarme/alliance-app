@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alliance App - Inventory</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+    }
+    .navbar {
+      background: #1e293b;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-links a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+    }
+    .container {
+      padding: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+    .status-ok { background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px; }
+    .status-low { background: #facc15; color: black; padding: 4px 8px; border-radius: 6px; }
+    .status-out { background: #ef4444; color: white; padding: 4px 8px; border-radius: 6px; }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 300px;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div><strong>Alliance App</strong></div>
+    <div class="nav-links">
+      <a href="index.html">Login</a>
+      <a href="customers.html">Customers</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="work-orders.html">Work Orders</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Inventory</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Description</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="inventory-body"></tbody>
+    </table>
+    <button class="btn" onclick="openModal('add')">Add Item</button>
+  </div>
+
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3 id="modal-title">Add Item</h3>
+      <input id="itemName" placeholder="Item Name" />
+      <input id="itemDesc" placeholder="Description" />
+      <input id="itemQty" placeholder="Quantity" type="number" />
+      <button class="btn" onclick="saveItem()">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    let items = [
+      { name: "Oil Filter", desc: "Engine oil filter", qty: 10 },
+      { name: "Brake Pad", desc: "Front brake pad", qty: 2 },
+      { name: "Air Filter", desc: "Cabin air filter", qty: 0 }
+    ];
+    let editingIndex = -1;
+
+    function renderInventory() {
+      const tbody = document.getElementById('inventory-body');
+      tbody.innerHTML = '';
+      items.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const status = item.qty === 0 ? 'out' : item.qty <= 3 ? 'low' : 'ok';
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.desc}</td>
+          <td>${item.qty}</td>
+          <td><span class="status-${status}">${status.toUpperCase()}</span></td>
+          <td><button class="btn" onclick="editItem(${index})">Edit</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openModal(mode) {
+      editingIndex = mode === 'add' ? -1 : editingIndex;
+      document.getElementById('modal-title').textContent = mode === 'add' ? 'Add Item' : 'Edit Item';
+      document.getElementById('modal').style.display = 'flex';
+
+      if (editingIndex !== -1) {
+        const item = items[editingIndex];
+        document.getElementById('itemName').value = item.name;
+        document.getElementById('itemDesc').value = item.desc;
+        document.getElementById('itemQty').value = item.qty;
+      } else {
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemDesc').value = '';
+        document.getElementById('itemQty').value = '';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function saveItem() {
+      const name = document.getElementById('itemName').value.trim();
+      const desc = document.getElementById('itemDesc').value.trim();
+      const qty = parseInt(document.getElementById('itemQty').value.trim());
+
+      if (!name || isNaN(qty)) return alert("Item name and quantity are required.");
+
+      if (editingIndex === -1) {
+        items.push({ name, desc, qty });
+      } else {
+        items[editingIndex] = { name, desc, qty };
+      }
+      closeModal();
+      renderInventory();
+    }
+
+    function editItem(index) {
+      editingIndex = index;
+      openModal('edit');
+    }
+
+    renderInventory();
+  </script>
+</body>
+</html>

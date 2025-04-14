@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alliance App - Customers</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+    }
+    aside {
+      width: 25%;
+      background: #f1f5f9;
+      padding: 1rem;
+      border-right: 1px solid #ddd;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+    }
+    .customer {
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .customer:hover {
+      background: #e2e8f0;
+    }
+    .selected {
+      background: #cbd5e1;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <h3>Trucks</h3>
+    <div id="list"></div>
+  </aside>
+  <main>
+    <h2>Customer Details</h2>
+    <div id="details">
+      <p>Select a truck from the list</p>
+    </div>
+    <div style="margin-top: 20px;">
+      <button class="btn">Add Customer</button>
+      <button class="btn">Edit</button>
+    </div>
+  </main>
+
+  <script>
+    const customers = [
+      { id: '301', parent: 'ALLIANCE', vin: '1XKAD49X8DJ353311', license: 'AB12345', make: 'Kenworth T800' },
+      { id: '302', parent: 'ALLIANCE', vin: '3HSDZAPR5GN001002', license: 'CD67890', make: 'International ProStar' }
+    ];
+
+    const list = document.getElementById('list');
+    const details = document.getElementById('details');
+    let selectedId = null;
+
+    customers.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'customer';
+      div.textContent = c.id;
+      div.onclick = () => {
+        selectedId = c.id;
+        update();
+      };
+      list.appendChild(div);
+    });
+
+    function update() {
+      const customer = customers.find(c => c.id === selectedId);
+      details.innerHTML = `
+        <p><strong>Truck ID:</strong> ${customer.id}</p>
+        <p><strong>Parent:</strong> ${customer.parent}</p>
+        <p><strong>VIN:</strong> ${customer.vin}</p>
+        <p><strong>License Plate:</strong> ${customer.license}</p>
+        <p><strong>Make/Model:</strong> ${customer.make}</p>
+      `;
+      [...list.children].forEach(div => {
+        div.className = 'customer';
+        if (div.textContent === customer.id) {
+          div.classList.add('selected');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

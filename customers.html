@@ -8,14 +8,30 @@
     body {
       font-family: sans-serif;
       margin: 0;
+    }
+    .navbar {
+      background: #1e293b;
+      color: white;
+      padding: 1rem;
       display: flex;
-      height: 100vh;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-links a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+    }
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
     }
     aside {
       width: 25%;
       background: #f1f5f9;
       padding: 1rem;
       border-right: 1px solid #ddd;
+      overflow-y: auto;
     }
     main {
       flex: 1;
@@ -63,24 +79,36 @@
   </style>
 </head>
 <body>
-  <aside>
-    <h3>Trucks</h3>
-    <div id="list"></div>
-  </aside>
-  <main>
-    <h2>Customer Details</h2>
-    <div id="details">
-      <p>Select a truck from the list</p>
+  <div class="navbar">
+    <div><strong>Alliance App</strong></div>
+    <div class="nav-links">
+      <a href="index.html">Login</a>
+      <a href="customers.html">Customers</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="work-orders.html">Work Orders</a>
     </div>
-    <div style="margin-top: 20px;">
-      <button class="btn" onclick="openModal()">Add Customer</button>
-      <button class="btn">Edit</button>
-    </div>
-  </main>
+  </div>
+
+  <div class="container">
+    <aside>
+      <h3>Trucks</h3>
+      <div id="list"></div>
+    </aside>
+    <main>
+      <h2>Customer Details</h2>
+      <div id="details">
+        <p>Select a truck from the list</p>
+      </div>
+      <div style="margin-top: 20px;">
+        <button class="btn" onclick="openModal('add')">Add Customer</button>
+        <button class="btn" onclick="openModal('edit')">Edit</button>
+      </div>
+    </main>
+  </div>
 
   <div id="modal" class="modal" style="display: none;">
     <div class="modal-content">
-      <h3>Add Customer</h3>
+      <h3 id="modal-title">Add Customer</h3>
       <input id="newId" placeholder="Truck ID" />
       <input id="newParent" placeholder="Parent" />
       <input id="newVin" placeholder="VIN" />
@@ -92,14 +120,16 @@
   </div>
 
   <script>
-    const customers = [
+    let customers = [
       { id: '301', parent: 'ALLIANCE', vin: '1XKAD49X8DJ353311', license: 'AB12345', make: 'Kenworth T800' },
       { id: '302', parent: 'ALLIANCE', vin: '3HSDZAPR5GN001002', license: 'CD67890', make: 'International ProStar' }
     ];
 
+    let selectedId = null;
+    let mode = 'add';
+
     const list = document.getElementById('list');
     const details = document.getElementById('details');
-    let selectedId = null;
 
     function renderList() {
       list.innerHTML = '';
@@ -128,8 +158,28 @@
       `;
     }
 
-    function openModal() {
-      document.getElementById('modal').style.display = 'flex';
+    function openModal(action) {
+      mode = action;
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modal-title');
+      if (action === 'edit') {
+        if (!selectedId) return alert("Select a customer to edit.");
+        const c = customers.find(c => c.id === selectedId);
+        document.getElementById('newId').value = c.id;
+        document.getElementById('newParent').value = c.parent;
+        document.getElementById('newVin').value = c.vin;
+        document.getElementById('newLicense').value = c.license;
+        document.getElementById('newMake').value = c.make;
+        title.textContent = "Edit Customer";
+      } else {
+        title.textContent = "Add Customer";
+        document.getElementById('newId').value = '';
+        document.getElementById('newParent').value = '';
+        document.getElementById('newVin').value = '';
+        document.getElementById('newLicense').value = '';
+        document.getElementById('newMake').value = '';
+      }
+      modal.style.display = 'flex';
     }
 
     function closeModal() {
@@ -144,9 +194,20 @@
       const newMake = document.getElementById('newMake').value.trim();
       if (!newId || !newVin) return alert("Truck ID and VIN are required.");
 
-      customers.push({ id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake });
+      if (mode === 'edit') {
+        const index = customers.findIndex(c => c.id === selectedId);
+        if (index !== -1) {
+          customers[index] = { id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake };
+          selectedId = newId;
+        }
+      } else {
+        customers.push({ id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake });
+        selectedId = newId;
+      }
+
       closeModal();
       renderList();
+      updateDetails();
     }
 
     renderList();

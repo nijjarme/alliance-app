@@ -42,6 +42,9 @@ fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header")
       <input type="number" id="threshold" value="3" style="width: 60px;" onchange="renderInventory()" />
       <input type="text" id="search" placeholder="Search..." oninput="renderInventory()" style="margin-left: 1rem;" />
       <button class="btn" onclick="exportCSV()">Export CSV</button>
+
+<input type="file" id="importFile" onchange="importCSV()" />
+
     </div>
     <table>
       <thead>
@@ -184,6 +187,36 @@ fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header")
     }
 
     renderInventory();
-  </script>
+  
+function importCSV() {
+  const input = document.getElementById('importFile');
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split("\n").slice(1);
+    lines.forEach(line => {
+      const [name, desc, qty, cost] = line.split(",");
+      if (!name || items.some(i => i.name === name)) return;
+      items.push({ name, desc, qty: parseInt(qty), cost: parseFloat(cost) });
+    });
+    localStorage.setItem("inventory", JSON.stringify(items));
+    renderInventory();
+  };
+  reader.readAsText(file);
+}
+
+function deleteItem(index) {
+  if (!confirm("Are you sure you want to delete this item?")) return;
+  const pass = prompt("Enter super password:");
+  if (pass !== "admin123") {
+    alert("❌ Incorrect super password.");
+    return;
+  }
+  items.splice(index, 1);
+  renderInventory();
+}
+
+</script>
 </body>
 </html>

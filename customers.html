@@ -86,10 +86,22 @@
 <body>
 <div id="header"></div>
 <script>fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);</script>
+
+<div class="nav-secondary" style="background: #e8f0fe; padding: 0.5rem 1rem; display: flex; gap: 1rem; margin-top: 0.5rem;">
+  <button class="btn" onclick="openModal('add')">Add Truck</button>
+  <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
+</div>
+
   <div id="header"></div>
 <script>
 fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);
 </script>
+
+<div class="nav-secondary" style="background: #e8f0fe; padding: 0.5rem 1rem; display: flex; gap: 1rem; margin-top: 0.5rem;">
+  <button class="btn" onclick="openModal('add')">Add Truck</button>
+  <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
+</div>
+
 <!-- nav-primary removed -->
     <div><strong>Alliance App</strong></div>
     <div>
@@ -262,5 +274,11 @@ fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header")
 
     renderList();
   </script>
+
+<div class="nav-secondary" style="background: #e8f0fe; padding: 0.5rem 1rem; display: flex; gap: 1rem; margin-top: 0.5rem;">
+  <button class="btn" onclick="openModal('add')">Add Truck</button>
+  <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
+</div>
+
 </body>
 </html>

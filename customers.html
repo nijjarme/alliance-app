@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Alliance App - Customers</title>
+  <title>Alliance App - Customers v5</title>
   <style>
     body {
       margin: 0;
@@ -37,6 +37,7 @@
       width: 250px;
       border-right: 1px solid #ccc;
       padding: 1rem;
+      overflow-y: auto;
     }
     .details {
       flex: 1;
@@ -48,125 +49,209 @@
     }
     .child {
       margin-left: 1rem;
+      cursor: pointer;
+    }
+    .child:hover {
+      background: #e2e8f0;
+    }
+    .selected {
+      background: #cbd5e1;
+    }
+    .btn {
+      padding: 0.4rem 0.75rem;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .modal {
+      position: fixed;
+      top: 20%;
+      left: 35%;
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="nav-primary">
-    <div>Alliance App</div>
+    <div><strong>Alliance App</strong></div>
     <div>
       <a href="customers.html">Customers</a>
       <a href="inventory.html">Inventory</a>
     </div>
   </div>
   <div class="nav-secondary">
-    <button onclick="openTruckModal()">Add Truck</button>
-    <button onclick="openParentModal()">Manage Parent Customers</button>
+    <button class="btn" onclick="openModal('add')">Add Truck</button>
+    <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
   </div>
+
   <div class="main-content">
-    <div class="sidebar" id="customerList"></div>
-    <div class="details" id="customerDetails">Select a customer to view details</div>
+    <div class="sidebar" id="list"></div>
+    <div class="details">
+      <h2>Customer Details</h2>
+      <div id="details">Select a truck from the list</div>
+    </div>
   </div>
 
   <!-- Truck Modal -->
-  <div id="truckModal" style="display:none; position:fixed; top:20%; left:35%; background:#fff; border:1px solid #ccc; padding:1rem;">
-    <h3>Add Truck</h3>
-    <input id="truckName" placeholder="Truck Name" /><br>
-    <select id="parentSelect"></select><br>
-    <button onclick="saveTruck()">Save</button>
-    <button onclick="closeTruckModal()">Cancel</button>
+  <div id="modal" class="modal">
+    <h3 id="modal-title">Add Truck</h3>
+    <input id="newId" placeholder="Truck ID" /><br>
+    <select id="newParent"></select><br>
+    <input id="newVin" placeholder="VIN" /><br>
+    <input id="newLicense" placeholder="License Plate" /><br>
+    <input id="newMake" placeholder="Make/Model" /><br>
+    <button class="btn" onclick="saveCustomer()">Save</button>
+    <button class="btn" onclick="closeModal()">Cancel</button>
   </div>
 
   <!-- Parent Modal -->
-  <div id="parentModal" style="display:none; position:fixed; top:20%; left:35%; background:#fff; border:1px solid #ccc; padding:1rem;">
+  <div id="parentModal" class="modal">
     <h3>Manage Parent Customers</h3>
-    <input id="newParent" placeholder="New Parent Name" />
-    <button onclick="addParent()">Add</button>
+    <input id="newParentName" placeholder="Parent Customer Name" />
+    <button class="btn" onclick="addParent()">Add</button>
     <ul id="parentList"></ul>
-    <button onclick="closeParentModal()">Close</button>
+    <button class="btn" onclick="closeParentModal()">Done</button>
   </div>
 
   <script>
-    const parents = JSON.parse(localStorage.getItem('parents') || '[]');
-    const trucks = JSON.parse(localStorage.getItem('trucks') || '[]');
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
+    let parents = JSON.parse(localStorage.getItem("parents")) || ["ALLIANCE"];
+    let selectedId = null;
+    let mode = 'add';
 
-    function renderSidebar() {
-      const list = document.getElementById("customerList");
+    function renderList() {
+      const list = document.getElementById('list');
       list.innerHTML = '';
       parents.forEach(p => {
-        const pDiv = document.createElement("div");
-        pDiv.className = "parent";
+        const pDiv = document.createElement('div');
+        pDiv.className = 'parent';
         pDiv.textContent = p;
         list.appendChild(pDiv);
-
-        trucks.filter(t => t.parent === p).forEach(t => {
-          const cDiv = document.createElement("div");
-          cDiv.className = "child";
-          cDiv.textContent = t.name;
-          cDiv.onclick = () => showDetails(t);
-          list.appendChild(cDiv);
+        customers.filter(c => c.parent === p).forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'child';
+          if (c.id === selectedId) div.classList.add('selected');
+          div.textContent = "• " + c.id;
+          div.onclick = () => {
+            selectedId = c.id;
+            updateDetails();
+            renderList();
+          };
+          list.appendChild(div);
         });
       });
+      localStorage.setItem("customers", JSON.stringify(customers));
     }
 
-    function showDetails(truck) {
-      document.getElementById("customerDetails").innerHTML = \`
-        <h2>\${truck.name}</h2>
-        <p>Parent: \${truck.parent}</p>
-        <button onclick='editTruck("\${truck.name}")'>Edit</button>
-      \`;
+    function updateDetails() {
+      const details = document.getElementById('details');
+      const c = customers.find(c => c.id === selectedId);
+      if (!c) return;
+      details.innerHTML = `
+        <p><strong>Truck ID:</strong> ${c.id}</p>
+        <p><strong>Parent:</strong> ${c.parent}</p>
+        <p><strong>VIN:</strong> ${c.vin}</p>
+        <p><strong>License Plate:</strong> ${c.license}</p>
+        <p><strong>Make/Model:</strong> ${c.make}</p>
+        <button class="btn" onclick="openModal('edit')">Edit</button>
+      `;
     }
 
-    function openTruckModal() {
-      document.getElementById("truckModal").style.display = "block";
-      const select = document.getElementById("parentSelect");
-      select.innerHTML = parents.map(p => \`<option value="\${p}">\${p}</option>\`).join('');
-    }
+    function openModal(action) {
+      mode = action;
+      document.getElementById('modal-title').textContent = action === 'edit' ? 'Edit Truck' : 'Add Truck';
+      document.getElementById('modal').style.display = 'block';
+      renderParentDropdown();
 
-    function closeTruckModal() {
-      document.getElementById("truckModal").style.display = "none";
-    }
-
-    function saveTruck() {
-      const name = document.getElementById("truckName").value;
-      const parent = document.getElementById("parentSelect").value;
-      if (name && parent) {
-        trucks.push({ name, parent });
-        localStorage.setItem('trucks', JSON.stringify(trucks));
-        closeTruckModal();
-        renderSidebar();
+      if (action === 'edit') {
+        const c = customers.find(c => c.id === selectedId);
+        document.getElementById('newId').value = c.id;
+        document.getElementById('newParent').value = c.parent;
+        document.getElementById('newVin').value = c.vin;
+        document.getElementById('newLicense').value = c.license;
+        document.getElementById('newMake').value = c.make;
+      } else {
+        ['newId', 'newVin', 'newLicense', 'newMake'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('newParent').value = "";
       }
     }
 
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function saveCustomer() {
+      const id = document.getElementById('newId').value.trim();
+      const parent = document.getElementById('newParent').value;
+      const vin = document.getElementById('newVin').value.trim();
+      const license = document.getElementById('newLicense').value.trim();
+      const make = document.getElementById('newMake').value.trim();
+
+      if (!id || !vin) return alert("Truck ID and VIN are required.");
+      const index = customers.findIndex(c => c.id === id);
+
+      if (mode === 'edit' && selectedId && index !== -1) {
+        customers[index] = { id, parent, vin, license, make };
+        selectedId = id;
+      } else if (mode === 'add') {
+        if (index !== -1) return alert("Truck ID must be unique.");
+        customers.push({ id, parent, vin, license, make });
+        selectedId = id;
+      }
+
+      closeModal();
+      renderList();
+      updateDetails();
+    }
+
+    function renderParentDropdown() {
+      const dropdown = document.getElementById('newParent');
+      dropdown.innerHTML = '<option value="">-- Select Parent --</option>';
+      parents.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        dropdown.appendChild(opt);
+      });
+    }
+
     function openParentModal() {
-      document.getElementById("parentModal").style.display = "block";
+      document.getElementById('parentModal').style.display = 'block';
       renderParentList();
     }
 
     function closeParentModal() {
-      document.getElementById("parentModal").style.display = "none";
-    }
-
-    function addParent() {
-      const name = document.getElementById("newParent").value;
-      if (name) {
-        parents.push(name);
-        localStorage.setItem('parents', JSON.stringify(parents));
-        renderParentList();
-        renderSidebar();
-      }
+      document.getElementById('parentModal').style.display = 'none';
     }
 
     function renderParentList() {
-      const ul = document.getElementById("parentList");
-      ul.innerHTML = parents.map(p => \`<li>\${p}</li>\`).join('');
+      const list = document.getElementById('parentList');
+      list.innerHTML = '';
+      parents.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = p;
+        list.appendChild(li);
+      });
     }
 
-    function editTruck(name) {
-      alert("Edit not implemented yet for " + name);
+    function addParent() {
+      const name = document.getElementById('newParentName').value.trim();
+      if (!name) return;
+      if (parents.includes(name)) return alert("Parent already exists.");
+      parents.push(name);
+      document.getElementById('newParentName').value = '';
+      localStorage.setItem("parents", JSON.stringify(parents));
+      renderParentList();
+      renderList();
     }
 
-    renderSidebar();
+    renderList();
   </script>
 </body>
 </html>

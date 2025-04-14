@@ -21,18 +21,15 @@
   </style>
 </head>
 <body>
+<div id="header"></div>
+<script>fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);</script>
   <div id="header"></div>
 <script>
 fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);
 </script>
 <!-- navbar removed -->
     <div><strong>Alliance App</strong></div>
-    <div class="nav-links">
-      <a href="index.html">Login</a>
-      <a href="customers.html">Customers</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="work-orders.html">Work Orders</a>
-    </div>
+    
   </div>
 
   <div class="container">

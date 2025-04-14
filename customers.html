@@ -84,6 +84,8 @@
   </style>
 </head>
 <body>
+<div id="header"></div>
+<script>fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);</script>
   <div id="header"></div>
 <script>
 fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);
@@ -95,10 +97,7 @@ fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header")
       <a href="inventory.html">Inventory</a>
     </div>
   </div>
-  <div class="nav-secondary">
-    <button class="btn" onclick="openModal('add')">Add Truck</button>
-    <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
-  </div>
+  
 
   <div class="main-content">
     <div class="sidebar" id="list"></div>

@@ -1,81 +1,22 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Alliance App - Customers</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-    }
-    .navbar {
-      background: #1e293b;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav-links a {
-      color: white;
-      margin-left: 1rem;
-      text-decoration: none;
-    }
-    .container {
-      display: flex;
-      height: calc(100vh - 60px);
-    }
-    aside {
-      width: 25%;
-      background: #f1f5f9;
-      padding: 1rem;
-      border-right: 1px solid #ddd;
-      overflow-y: auto;
-    }
-    main {
-      flex: 1;
-      padding: 2rem;
-    }
-    .customer {
-      padding: 8px;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-    .customer:hover {
-      background: #e2e8f0;
-    }
-    .selected {
-      background: #cbd5e1;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      background: #007acc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      margin-right: 0.5rem;
-    }
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      width: 300px;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0;
-    }
+    body { font-family: sans-serif; margin: 0; }
+    .navbar { background: #1e293b; color: white; padding: 1rem; display: flex; justify-content: space-between; }
+    .nav-links a { color: white; margin-left: 1rem; text-decoration: none; }
+    .container { display: flex; height: calc(100vh - 60px); }
+    aside { width: 25%; background: #f1f5f9; padding: 1rem; border-right: 1px solid #ddd; overflow-y: auto; }
+    main { flex: 1; padding: 2rem; overflow-y: auto; }
+    .customer { padding: 8px; cursor: pointer; border-radius: 6px; }
+    .customer:hover { background: #e2e8f0; }
+    .selected { background: #cbd5e1; }
+    .btn { padding: 0.5rem 1rem; background: #007acc; color: white; border: none; border-radius: 6px; margin: 5px; }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 300px; }
+    .modal-content input { width: 100%; padding: 8px; margin: 6px 0; }
   </style>
 </head>
 <body>
@@ -120,18 +61,15 @@
   </div>
 
   <script>
-    let customers = [
+    let customers = JSON.parse(localStorage.getItem("customers")) || [
       { id: '301', parent: 'ALLIANCE', vin: '1XKAD49X8DJ353311', license: 'AB12345', make: 'Kenworth T800' },
       { id: '302', parent: 'ALLIANCE', vin: '3HSDZAPR5GN001002', license: 'CD67890', make: 'International ProStar' }
     ];
-
     let selectedId = null;
     let mode = 'add';
 
-    const list = document.getElementById('list');
-    const details = document.getElementById('details');
-
     function renderList() {
+      const list = document.getElementById('list');
       list.innerHTML = '';
       customers.forEach(c => {
         const div = document.createElement('div');
@@ -145,10 +83,13 @@
         };
         list.appendChild(div);
       });
+      localStorage.setItem("customers", JSON.stringify(customers));
     }
 
     function updateDetails() {
+      const details = document.getElementById('details');
       const customer = customers.find(c => c.id === selectedId);
+      if (!customer) return;
       details.innerHTML = `
         <p><strong>Truck ID:</strong> ${customer.id}</p>
         <p><strong>Parent:</strong> ${customer.parent}</p>
@@ -173,11 +114,7 @@
         title.textContent = "Edit Customer";
       } else {
         title.textContent = "Add Customer";
-        document.getElementById('newId').value = '';
-        document.getElementById('newParent').value = '';
-        document.getElementById('newVin').value = '';
-        document.getElementById('newLicense').value = '';
-        document.getElementById('newMake').value = '';
+        ['newId', 'newParent', 'newVin', 'newLicense', 'newMake'].forEach(id => document.getElementById(id).value = '');
       }
       modal.style.display = 'flex';
     }
@@ -194,13 +131,12 @@
       const newMake = document.getElementById('newMake').value.trim();
       if (!newId || !newVin) return alert("Truck ID and VIN are required.");
 
-      if (mode === 'edit') {
-        const index = customers.findIndex(c => c.id === selectedId);
-        if (index !== -1) {
-          customers[index] = { id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake };
-          selectedId = newId;
-        }
-      } else {
+      const index = customers.findIndex(c => c.id === newId);
+      if (mode === 'edit' && selectedId && index !== -1) {
+        customers[index] = { id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake };
+        selectedId = newId;
+      } else if (mode === 'add') {
+        if (index !== -1) return alert("Customer ID must be unique.");
         customers.push({ id: newId, parent: newParent, vin: newVin, license: newLicense, make: newMake });
         selectedId = newId;
       }

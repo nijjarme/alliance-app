@@ -5,84 +5,23 @@
   <meta charset="UTF-8" />
   <title>Alliance App - Login</title>
   <style>
-    body { font-family: sans-serif; margin: 0; background: #f6f8fa; }
-    .navbar {
-      background: #1e293b;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-    }
-    .nav-links a {
-      color: white;
-      margin-left: 1rem;
-      text-decoration: none;
-    }
-    .main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100vh - 80px);
-    }
-    .login-box {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 300px;
-      text-align: center;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background: #007acc;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #005fa3;
-    }
-    .msg {
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    .continue {
-      display: block;
-      margin-top: 1rem;
-      color: #007acc;
-      text-decoration: none;
-      font-weight: bold;
-    }
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f6f8fa; }
+    .login-box { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+    input, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #007acc; color: white; border: none; cursor: pointer; }
+    button:hover { background: #005fa3; }
+    .msg { margin-top: 1rem; font-weight: bold; }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <div><strong>Alliance App</strong></div>
-    <div class="nav-links">
-      <a href="index.html">Login</a>
-      <a href="customers.html">Customers</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="work-orders.html">Work Orders</a>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="login-box">
-      <h1>Alliance App</h1>
-      <p>Login</p>
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <div class="msg" id="msg"></div>
-      <a href='customers.html' class="continue">→ Continue to Customers</a>
-    </div>
+  <div class="login-box">
+    <h1>Alliance App</h1>
+    <p>Login</p>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="msg" id="msg"></div>
+    <a href='customers.html'>Continue to Customers →</a>
   </div>
 
   <script>

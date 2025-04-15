@@ -140,10 +140,13 @@
   
     
   </div>
-  <div class="nav-secondary">
+  <div class="nav-secondary" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; background: #e8f0fe;">
+  <div><strong>Customers</strong></div>
+  <div>
     <button class="btn" onclick="openModal('add')">Add Truck</button>
     <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
   </div>
+</div>
 
   <div class="main-content">
     <div class="sidebar" id="list"></div>
@@ -309,26 +312,30 @@
     renderList();
   </script>
 
+
+
+
 <script>
 function enableEdit() {
   const truck = customers.find(c => c.id === selectedId);
-  const details = document.getElementById("customerDetails");
-  details.innerHTML = \`
+  const detail = document.getElementById("customerDetails");
+  detail.innerHTML = `
     <h2>Edit Truck</h2>
-    <label>Truck ID</label><input value="\${truck.id}" disabled /><br/>
-    <label>Parent</label><input value="\${truck.parent}" disabled /><br/>
-    <label>VIN</label><input id="vinEdit" value="\${truck.vin}" /><br/>
-    <label>License Plate</label><input id="licenseEdit" value="\${truck.license}" /><br/>
-    <label>Make/Model</label><input id="makeEdit" value="\${truck.make}" /><br/>
+    <label>Truck ID</label><input value="${truck.id}" disabled /><br/>
+    <label>Parent</label><input value="${truck.parent}" disabled /><br/>
+    <label>VIN</label><input id="vinEdit" value="${truck.vin}" /><br/>
+    <label>License Plate</label><input id="licenseEdit" value="${truck.license}" /><br/>
+    <label>Make/Model</label><input id="makeEdit" value="${truck.make}" /><br/>
     <button onclick="saveEdit()">Save</button>
     <button onclick="updateDetails()">Cancel</button>
-  \`;
+  `;
 }
+
 function saveEdit() {
   const truck = customers.find(c => c.id === selectedId);
-  truck.vin = document.getElementById("vinEdit").value;
-  truck.license = document.getElementById("licenseEdit").value;
-  truck.make = document.getElementById("makeEdit").value;
+  truck.vin = document.getElementById('vinEdit').value;
+  truck.license = document.getElementById('licenseEdit').value;
+  truck.make = document.getElementById('makeEdit').value;
   localStorage.setItem("customers", JSON.stringify(customers));
   updateDetails();
 }

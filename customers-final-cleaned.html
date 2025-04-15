@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alliance App - Customers v5</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .nav-primary {
+      background: #004aad;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav-primary a {
+      color: white;
+      text-decoration: none;
+      margin-right: 1rem;
+    }
+    .nav-secondary {
+      background: #e8f0fe;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .main-content {
+      display: flex;
+      flex: 1;
+    }
+    .sidebar {
+      width: 250px;
+      border-right: 1px solid #ccc;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .details {
+      flex: 1;
+      padding: 1rem;
+    }
+    .parent {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    .child {
+      margin-left: 1rem;
+      cursor: pointer;
+    }
+    .child:hover {
+      background: #e2e8f0;
+    }
+    .selected {
+      background: #cbd5e1;
+    }
+    .btn {
+      padding: 0.4rem 0.75rem;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .modal {
+      position: fixed;
+      top: 20%;
+      left: 35%;
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="header"></div>
+<script>
+  fetch("header.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
+</script>
+
+
+<div id="header"></div>
+<script>
+  fetch("header.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
+</script>
+
+  
+    <div>
+      <a href="customers.html">Customers</a>
+      <a href="inventory.html">Inventory</a>
+    </div>
+  </div>
+  <div class="nav-secondary">
+    <button class="btn" onclick="openModal('add')">Add Truck</button>
+    <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
+  </div>
+
+  <div class="main-content">
+    <div class="sidebar" id="list"></div>
+    <div class="details">
+      <h2>Customer Details</h2>
+      <div id="details">Select a truck from the list</div>
+    </div>
+  </div>
+
+  <!-- Truck Modal -->
+  <div id="modal" class="modal">
+    <h3 id="modal-title">Add Truck</h3>
+    <input id="newId" placeholder="Truck ID" /><br>
+    <select id="newParent"></select><br>
+    <input id="newVin" placeholder="VIN" /><br>
+    <input id="newLicense" placeholder="License Plate" /><br>
+    <input id="newMake" placeholder="Make/Model" /><br>
+    <button class="btn" onclick="saveCustomer()">Save</button>
+    <button class="btn" onclick="closeModal()">Cancel</button>
+  </div>
+
+  <!-- Parent Modal -->
+  <div id="parentModal" class="modal">
+    <h3>Manage Parent Customers</h3>
+    <input id="newParentName" placeholder="Parent Customer Name" />
+    <button class="btn" onclick="addParent()">Add</button>
+    <ul id="parentList"></ul>
+    <button class="btn" onclick="closeParentModal()">Done</button>
+  </div>
+
+  <script>
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
+    let parents = JSON.parse(localStorage.getItem("parents")) || ["ALLIANCE"];
+    let selectedId = null;
+    let mode = 'add';
+
+    function renderList() {
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      parents.forEach(p => {
+        const pDiv = document.createElement('div');
+        pDiv.className = 'parent';
+        pDiv.textContent = p;
+        list.appendChild(pDiv);
+        customers.filter(c => c.parent === p).forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'child';
+          if (c.id === selectedId) div.classList.add('selected');
+          div.textContent = "• " + c.id;
+          div.onclick = () => {
+            selectedId = c.id;
+            updateDetails();
+            renderList();
+          };
+          list.appendChild(div);
+        });
+      });
+      localStorage.setItem("customers", JSON.stringify(customers));
+    }
+
+    function updateDetails() {
+      const details = document.getElementById('details');
+      const c = customers.find(c => c.id === selectedId);
+      if (!c) return;
+      details.innerHTML = `
+        <p><strong>Truck ID:</strong> ${c.id}</p>
+        <p><strong>Parent:</strong> ${c.parent}</p>
+        <p><strong>VIN:</strong> ${c.vin}</p>
+        <p><strong>License Plate:</strong> ${c.license}</p>
+        <p><strong>Make/Model:</strong> ${c.make}</p>
+        <button class="btn" onclick="openModal('edit')">Edit</button>
+      `;
+    }
+
+    function openModal(action) {
+      mode = action;
+      document.getElementById('modal-title').textContent = action === 'edit' ? 'Edit Truck' : 'Add Truck';
+      document.getElementById('modal').style.display = 'block';
+      renderParentDropdown();
+
+      if (action === 'edit') {
+        const c = customers.find(c => c.id === selectedId);
+        document.getElementById('newId').value = c.id;
+        document.getElementById('newParent').value = c.parent;
+        document.getElementById('newVin').value = c.vin;
+        document.getElementById('newLicense').value = c.license;
+        document.getElementById('newMake').value = c.make;
+      } else {
+        ['newId', 'newVin', 'newLicense', 'newMake'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('newParent').value = "";
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function saveCustomer() {
+      const id = document.getElementById('newId').value.trim();
+      const parent = document.getElementById('newParent').value;
+      const vin = document.getElementById('newVin').value.trim();
+      const license = document.getElementById('newLicense').value.trim();
+      const make = document.getElementById('newMake').value.trim();
+
+      if (!id || !vin) return alert("Truck ID and VIN are required.");
+      const index = customers.findIndex(c => c.id === id);
+
+      if (mode === 'edit' && selectedId && index !== -1) {
+        customers[index] = { id, parent, vin, license, make };
+        selectedId = id;
+      } else if (mode === 'add') {
+        if (index !== -1) return alert("Truck ID must be unique.");
+        customers.push({ id, parent, vin, license, make });
+        selectedId = id;
+      }
+
+      closeModal();
+      renderList();
+      updateDetails();
+    }
+
+    function renderParentDropdown() {
+      const dropdown = document.getElementById('newParent');
+      dropdown.innerHTML = '<option value="">-- Select Parent --</option>';
+      parents.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        dropdown.appendChild(opt);
+      });
+    }
+
+    function openParentModal() {
+      document.getElementById('parentModal').style.display = 'block';
+      renderParentList();
+    }
+
+    function closeParentModal() {
+      document.getElementById('parentModal').style.display = 'none';
+    }
+
+    function renderParentList() {
+      const list = document.getElementById('parentList');
+      list.innerHTML = '';
+      parents.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = p;
+        list.appendChild(li);
+      });
+    }
+
+    function addParent() {
+      const name = document.getElementById('newParentName').value.trim();
+      if (!name) return;
+      if (parents.includes(name)) return alert("Parent already exists.");
+      parents.push(name);
+      document.getElementById('newParentName').value = '';
+      localStorage.setItem("parents", JSON.stringify(parents));
+      renderParentList();
+      renderList();
+    }
+
+    renderList();
+  </script>
+</body>
+</html>

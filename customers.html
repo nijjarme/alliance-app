@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <title>Alliance App - Customers v5</title>
   <style>
+.modal {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  width: 300px;
+  margin: 2rem auto;
+}
+.modal label {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+.modal input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 0.75rem;
+}
+</style>
+<style>
     body {
       margin: 0;
       font-family: sans-serif;
@@ -97,7 +117,7 @@
   
     
   </div>
-  <div class="nav-secondary">
+  <div class="nav-secondary"><strong style="margin-right: 1rem;">Customers Module</strong>
     <button class="btn" onclick="openModal('add')">Add Truck</button>
     <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
   </div>

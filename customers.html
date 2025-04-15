@@ -86,6 +86,14 @@
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
 
+
+<div id="header"></div>
+<script>
+  fetch("header.html")
+    .then(r => r.text())
+    .then(t => document.getElementById("header").innerHTML = t);
+</script>
+
   
     <div>
       <a href="customers.html">Customers</a>

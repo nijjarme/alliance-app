@@ -1,570 +1,94 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Alliance App - Work Orders v10.2</title>
-  
-<style>
-.layout {
-  display: flex;
-  width: 100%;
-}
-.sidebar {
-  width: 25%;
-}
-.main {
-  width: 75%;
-  padding: 1rem;
-}
-
-<style>
-body {
-  background: #f6f8fa;
-}
-.sidebar {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  padding: 1rem;
-  margin: 1rem;
-  font-size: 0.95rem;
-  color: #1f2937;
-
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  margin: 1rem;
-  padding: 1rem;
-}
-.parent {
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 600;
-  margin-top: 2rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.25rem;
-
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 600;
-  margin-top: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.25rem;
-}
-.child {
-  margin-left: 1rem;
-  margin-top: 0.25rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 0.92rem;
-
-  margin-left: 1rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  margin-left: 1rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-.child:hover {
-  background: #f0f4f8;
-}
-.selected {
-  background: #e0f2fe;
-  font-weight: 500;
-  color: #0c4a6e;
-
-  background: #dbeafe;
-  font-weight: 500;
-}
-
-<style>
-body { background: #f6f8fa; }
-
-
-
-
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  width: 90%;
-  max-width: 400px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 1000;
-}
-.modal label {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-  margin-top: 0.75rem;
-  color: #6b7280;
-}
-.modal input,
-.modal select {
-  width: 100%;
-  padding: 0.55rem 0.6rem;
-  margin-bottom: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-}
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal button {
-  padding: 0.4rem 0.75rem;
-  margin-top: 0.5rem;
-  border-radius: 6px;
-}
-
-</style>
-
-<style>
-body { background: #f6f8fa; }
-
-
-
-
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  width: 90%;
-  max-width: 400px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 1000;
-}
-.modal label {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-  margin-top: 0.75rem;
-  color: #6b7280;
-}
-.modal input,
-.modal select {
-  width: 100%;
-  padding: 0.55rem 0.6rem;
-  margin-bottom: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-}
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal button {
-  padding: 0.4rem 0.75rem;
-  margin-top: 0.5rem;
-  border-radius: 6px;
-}
-
-</style>
-<style>
-body { background: #f6f8fa; }
-
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    .nav-primary {
-      background: #004aad;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-    }
-    .nav-primary a {
-      color: white;
-      text-decoration: none;
-      margin-right: 1rem;
-    }
-    .nav-secondary {
-      background: #e8f0fe;
-      padding: 0.5rem 1rem;
-      display: flex;
-      gap: 1rem;
-    }
-    .main-content {
-      display: flex;
-      flex: 1;
-    }
-    .sidebar {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  padding: 1rem;
-  margin: 1rem;
-  font-size: 0.95rem;
-  color: #1f2937;
-
-      width: 250px;
-      border-right: 1px solid #ccc;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-    .details {
-      flex: 1;
-      padding: 1rem;
-    }
-    .parent {
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 600;
-  margin-top: 2rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.25rem;
-
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-    .child {
-  margin-left: 1rem;
-  margin-top: 0.25rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 0.92rem;
-
-  margin-left: 1rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-      margin-left: 1rem;
-      cursor: pointer;
-    }
-    .child:hover {
-      background: #e2e8f0;
-    }
-    .selected {
-  background: #e0f2fe;
-  font-weight: 500;
-  color: #0c4a6e;
-
-      background: #cbd5e1;
-    }
-    .btn {
-      font-size: 1.001rem;
-      padding: 0.5rem 1rem;
-      background: #007acc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-      position: fixed;
-      top: 20%;
-      left: 35%;
-      background: white;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-      display: none;
-    }
-  </style>
+  <title>Work Orders v1.1</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="header"></div>
+  <script>
+    fetch("header.html").then(r => r.text()).then(t => document.getElementById("header").innerHTML = t);
+  </script>
 
-<div id="header"></div>
-<script>
-  fetch("header.html")
-    .then(r => r.text())
-    .then(t => document.getElementById("header").innerHTML = t);
-</script>
+  <div class="subnav"><h2>Work Orders</h2></div>
+  <div class="subnav" style="background-color:#cbd5e1;"></div>
 
-
-    
+  <div class="main">
+    <button onclick="openModal()">+ Add Work Order</button>
+    <table id="woTable"><thead><tr><th>WO #</th><th>Truck</th><th>Date</th><th>Total</th></tr></thead><tbody></tbody></table>
   </div>
-  <div class="nav-secondary" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; background: #e8f0fe;">
-  <div><strong>Work Orders</strong></div>
-  <div>
-    <button class="btn" onclick="openModal('add')">Add Truck</button>
-    <button class="btn" onclick="openParentModal()">Manage Parent Work Orders</button>
-  </div>
-</div>
 
-  <div class="main-content">
-    <div class="sidebar" id="list"></div>
-    <div class="details">
-      <h2>Customer Details</h2>
-      <div id="details">Select a truck from the list</div>
+  <div id="woModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>New Work Order</h3>
+      <form id="woForm" onsubmit="saveWorkOrder(event)">
+        <label>WO # <input required id="woNumber"></label>
+        <label>Date <input type="date" required id="woDate"></label>
+        <label>Truck <select id="woTruck" required></select></label>
+        <label>Odometer <input type="number" id="woOdo"></label>
+
+        <div id="woItems"></div>
+        <button type="button" onclick="addItem()">+ Add Item</button>
+
+        <div>Total (incl. tax): $<span id="woTotal">0.00</span></div>
+        <button type="submit">Save</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+      </form>
     </div>
-  </div>
-
-  <!-- Truck Modal -->
-  <div id="modal" class="modal">
-    <h3 id="modal-title">Add Truck</h3>
-    <input id="newId" placeholder="Truck ID" /><br>
-    <select id="newParent"></select><br>
-    <input id="newVin" placeholder="VIN" /><br>
-    <input id="newLicense" placeholder="License Plate" /><br>
-    <input id="newMake" placeholder="Make/Model" /><br>
-    <button class="btn" onclick="saveCustomer()">Save</button>
-    <button class="btn" onclick="closeModal()">Cancel</button>
-  </div>
-
-  <!-- Parent Modal -->
-  <div id="parentModal" class="modal">
-    <h3>Manage Parent Work Orders</h3>
-    <input id="newParentName" placeholder="Parent Customer Name" />
-    <button class="btn" onclick="addParent()">Add</button>
-    <ul id="parentList"></ul>
-    <button class="btn" onclick="closeParentModal()">Done</button>
   </div>
 
   <script>
-    let customers = JSON.parse(localStorage.getItem("customers")) || [];
-    let parents = JSON.parse(localStorage.getItem("parents")) || ["ALLIANCE"];
-    let selectedId = null;
-    let mode = 'add';
+    const inventory = JSON.parse(localStorage.getItem("inventory") || "[]");
+    const customers = JSON.parse(localStorage.getItem("customers") || "[]");
 
-    function renderList() {
-      const list = document.getElementById('list');
-      list.innerHTML = '';
-      parents.forEach(p => {
-        const pDiv = document.createElement('div');
-        pDiv.className = 'parent';
-        pDiv.textContent = p;
-        list.appendChild(pDiv);
-        customers.filter(c => c.parent === p).forEach(c => {
-          const div = document.createElement('div');
-          div.className = 'child';
-          if (c.id === selectedId) div.classList.add('selected');
-          div.textContent = "• " + c.id;
-          div.onclick = () => {
-            selectedId = c.id;
-            updateDetails();
-            renderList();
-          };
-          list.appendChild(div);
-        });
-      });
-      localStorage.setItem("customers", JSON.stringify(customers));
-    }
-
-    
-
-
-
-
-
-
-
-function updateDetails() {
-  const details = document.getElementById('details');
-  const c = customers.find(c => c.id === selectedId);
-  if (!c) return;
-  details.innerHTML = `
-    <div style="background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 1.5rem; margin-top: 1rem; overflow-x: auto;">
-      <div style="display: grid; grid-template-columns: 10% 15% 25% 20% 20% 10%; align-items: center; font-size: 0.8rem; color: #6b7280; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.25rem;">
-        <div>Truck ID</div><div>Parent</div><div>VIN</div><div>License Plate</div><div>Make/Model</div><div></div>
-      </div>
-      <div style="display: grid; grid-template-columns: 10% 15% 25% 20% 20% 10%; font-size: 0.95rem; color: #374151; padding-top: 0.5rem;">
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.id}">${c.id}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.parent}">${c.parent}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.vin}">${c.vin}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.license}">${c.license}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.make}">${c.make}</div>
-        <div><button class="btn" style="padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 999px;" onclick="openModal('edit')">Edit</button></div>
-      </div>
-    </div>
-  `;
-}
-
-
-
-
-
-
-    
-    
-
-    function openModal(action) {
-      mode = action;
-      document.getElementById('modal-title').textContent = action === 'edit' ? 'Edit Truck' : 'Add Truck';
-      document.getElementById('modal').style.display = 'block';
-      renderParentDropdown();
-
-      if (action === 'edit') {
-        const c = customers.find(c => c.id === selectedId);
-        document.getElementById('newId').value = c.id;
-        document.getElementById('newParent').value = c.parent;
-        document.getElementById('newVin').value = c.vin;
-        document.getElementById('newLicense').value = c.license;
-        document.getElementById('newMake').value = c.make;
-      } else {
-        ['newId', 'newVin', 'newLicense', 'newMake'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('newParent').value = "";
-      }
+    function openModal() {
+      document.getElementById("woForm").reset();
+      document.getElementById("woTruck").innerHTML = customers.map(c => 
+        `<option value="\${c.name}">\${c.name}</option>`
+      ).join("");
+      document.getElementById("woItems").innerHTML = "";
+      addItem(); // start with one row
+      updateTotal();
+      document.getElementById("woModal").style.display = "block";
     }
 
     function closeModal() {
-      document.getElementById('modal').style.display = 'none';
+      document.getElementById("woModal").style.display = "none";
     }
 
-    function saveCustomer() {
-      const id = document.getElementById('newId').value.trim();
-      const parent = document.getElementById('newParent').value;
-      const vin = document.getElementById('newVin').value.trim();
-      const license = document.getElementById('newLicense').value.trim();
-      const make = document.getElementById('newMake').value.trim();
+    function addItem() {
+      const row = document.createElement("div");
+      row.innerHTML = \`
+        <select onchange="updateTotal()">
+          <option value="">-- Select Item --</option>
+          \${inventory.map(i => `<option value="\${i.name}" data-cost="\${i.cost}">\${i.name}</option>`).join("")}
+        </select>
+        <input type="number" min="1" value="1" onchange="updateTotal()">
+      \`;
+      document.getElementById("woItems").appendChild(row);
+    }
 
-      if (!id || !vin) return alert("Truck ID and VIN are required.");
-      const index = customers.findIndex(c => c.id === id);
+    function updateTotal() {
+      const rows = document.querySelectorAll("#woItems div");
+      let total = 0;
+      rows.forEach(div => {
+        const select = div.querySelector("select");
+        const qty = parseFloat(div.querySelector("input").value || 0);
+        const cost = parseFloat(select.selectedOptions[0]?.dataset.cost || 0);
+        total += qty * cost;
+      });
+      total *= 1.13; // add 13% tax
+      document.getElementById("woTotal").textContent = total.toFixed(2);
+    }
 
-      if (mode === 'edit' && selectedId && index !== -1) {
-        customers[index] = { id, parent, vin, license, make };
-        selectedId = id;
-      } else if (mode === 'add') {
-        if (index !== -1) return alert("Truck ID must be unique.");
-        customers.push({ id, parent, vin, license, make });
-        selectedId = id;
-      }
-
+    function saveWorkOrder(e) {
+      e.preventDefault();
+      // Placeholder: saving will be added in v1.2
+      alert("Work order saved! (stub)");
       closeModal();
-      renderList();
-      updateDetails();
     }
-
-    function renderParentDropdown() {
-      const dropdown = document.getElementById('newParent');
-      dropdown.innerHTML = '<option value="">-- Select Parent --</option>';
-      parents.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p;
-        opt.textContent = p;
-        dropdown.appendChild(opt);
-      });
-    }
-
-    function openParentModal() {
-      document.getElementById('parentModal').style.display = 'block';
-      renderParentList();
-    }
-
-    function closeParentModal() {
-      document.getElementById('parentModal').style.display = 'none';
-    }
-
-    function renderParentList() {
-      const list = document.getElementById('parentList');
-      list.innerHTML = '';
-      parents.forEach(p => {
-        const li = document.createElement('li');
-        li.textContent = p;
-        list.appendChild(li);
-      });
-    }
-
-    function addParent() {
-      const name = document.getElementById('newParentName').value.trim();
-      if (!name) return;
-      if (parents.includes(name)) return alert("Parent already exists.");
-      parents.push(name);
-      document.getElementById('newParentName').value = '';
-      localStorage.setItem("parents", JSON.stringify(parents));
-      renderParentList();
-      renderList();
-    }
-
-    renderList();
   </script>
-
-
-
-
-<script>
-function enableEdit() {
-  const truck = customers.find(c => c.id === selectedId);
-  const detail = document.getElementById("customerDetails");
-  detail.innerHTML = `
-    <h2>Edit Truck</h2>
-    <label>Truck ID</label><input value="${truck.id}" disabled /><br/>
-    <label>Parent</label><input value="${truck.parent}" disabled /><br/>
-    <label>VIN</label><input id="vinEdit" value="${truck.vin}" /><br/>
-    <label>License Plate</label><input id="licenseEdit" value="${truck.license}" /><br/>
-    <label>Make/Model</label><input id="makeEdit" value="${truck.make}" /><br/>
-    <button onclick="saveEdit()">Save</button>
-    <button onclick="updateDetails()">Cancel</button>
-  `;
-}
-
-function saveEdit() {
-  const truck = customers.find(c => c.id === selectedId);
-  truck.vin = document.getElementById('vinEdit').value;
-  truck.license = document.getElementById('licenseEdit').value;
-  truck.make = document.getElementById('makeEdit').value;
-  localStorage.setItem("customers", JSON.stringify(customers));
-  updateDetails();
-}
-</script>
-
 </body>
 </html>

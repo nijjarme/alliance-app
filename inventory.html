@@ -1,61 +1,125 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Alliance App - Inventory</title>
   <style>
-    body { font-family: sans-serif; margin: 0; }
-    .navbar { background: #1e293b; color: white; padding: 1rem; display: flex; justify-content: space-between; }
+    body { font-family: sans-serif; margin: 0; background: #f8fafc; color: #1e293b; }
+    .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000; background: #1e293b; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
     .nav-links a { color: white; margin-left: 1rem; text-decoration: none; }
+
+    .subnav {
+    position: sticky;
+    top: 48px;
+    z-index: 999; background: #e2e8f0; padding: 0.75rem 1rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+
+    .btn {
+      font-size: 1.001rem;
+      padding: 0.5rem 1rem;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #0369a1;
+    }
+
     .container { padding: 2rem; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { padding: 0.75rem; border: 1px solid #ddd; text-align: left; }
-    .btn { padding: 0.5rem 1rem; background: #007acc; color: white; border: none; border-radius: 6px; margin-top: 1rem; margin-right: 0.5rem; }
-    .status-ok { background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px; }
-    .status-low { background: #facc15; color: black; padding: 4px 8px; border-radius: 6px; }
-    .status-out { background: #ef4444; color: white; padding: 4px 8px; border-radius: 6px; }
-    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 300px; }
-    .modal-content input { width: 100%; padding: 8px; margin: 6px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    tbody tr:nth-child(even) {
+      background: #f1f5f9;
+    }
+
+    .status-icon {
+      font-size: 1.25rem;
+    }
+    .ok { color: green; }
+    .low { color: orange; }
+    .out { color: red; }
+
+    .modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); display: flex;
+      align-items: center; justify-content: center;
+    }
+    .modal-content {
+      background: white; padding: 2rem;
+      border-radius: 12px; width: 300px;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+
+    input[type="text"], input[type="number"], select {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   </style>
 </head>
 <body>
-<div id="header"></div>
-<script>fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);</script>
-  <div id="header"></div>
-<script>
-fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header").innerHTML=t);
-</script>
-<!-- navbar removed -->
+  <div class="navbar">
     <div><strong>Alliance App</strong></div>
-    
+    <div class="nav-links">
+      <a href="#">Login</a>
+      <a href="#">Customers</a>
+      <a href="#">Inventory</a>
+      <a href="#">Work Orders</a>
+    </div>
+  </div>
+
+  <div class="subnav">
+    <div><strong>Inventory</strong></div>
+    <div class="actions">
+      <label>Low Stock Threshold: <input type="number" id="threshold" value="3" onchange="renderInventory()" style="width: 60px;" /></label>
+      <input type="text" id="search" placeholder="Search..." oninput="renderInventory()" />
+      <select id="statusFilter" onchange="renderInventory()">
+        <option value="all">All</option>
+        <option value="ok">✅ OK</option>
+        <option value="low">⚠️ LOW</option>
+        <option value="out">❌ OUT</option>
+      </select>
+      <button class="btn" onclick="openModal('add')">Add Item</button>
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <label class="btn" style="display:inline-flex;align-items:center;">
+        Import CSV
+        <input type="file" id="importFile" accept=".csv" style="display: none" onchange="importCSV(event)" />
+      </label>
+    </div>
   </div>
 
   <div class="container">
-    <h2>Inventory</h2>
-    <div>
-      <label>Low Stock Threshold: </label>
-      <input type="number" id="threshold" value="3" style="width: 60px;" onchange="renderInventory()" />
-      <input type="text" id="search" placeholder="Search..." oninput="renderInventory()" style="margin-left: 1rem;" />
-      <button class="btn" onclick="exportCSV()">Export CSV</button>
-
-<input type="file" id="importFile" onchange="importCSV()" />
-
-    </div>
     <table>
-      <thead>
+      <thead style="position: sticky; top: 110px; background: white; z-index: 998;">
         <tr>
-          <th>Item Name</th>
+          <th class="sortable" data-key="name" data-label="Item Name" onclick="sortItems('name')" style="cursor:pointer;">Item Name ⬍</th>
           <th>Description</th>
-          <th>Quantity</th>
-          <th>Cost</th>
+          <th class="sortable" data-key="qty" data-label="Quantity" onclick="sortItems('qty')" style="cursor:pointer;">Quantity ⬍</th>
+          <th class="sortable" data-key="cost" data-label="Cost" onclick="sortItems('cost')" style="cursor:pointer;">Cost ⬍</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody id="inventory-body"></tbody>
       <tfoot>
+<tr><td colspan="6" id="itemCount" style="text-align:right; font-style: italic;"></td></tr>
         <tr>
           <td colspan="2"><strong>Totals:</strong></td>
           <td id="totalQty"></td>
@@ -64,7 +128,6 @@ fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header")
         </tr>
       </tfoot>
     </table>
-    <button class="btn" onclick="openModal('add')">Add Item</button>
   </div>
 
   <div id="modal" class="modal" style="display:none;">
@@ -74,133 +137,155 @@ fetch("header.html").then(r=>r.text()).then(t=>document.getElementById("header")
       <input id="itemDesc" placeholder="Description" />
       <input id="itemQty" placeholder="Quantity" type="number" />
       <input id="itemCost" placeholder="Cost" type="number" />
-      <button class="btn" onclick="saveItem()">Save</button>
-      <button class="btn" onclick="closeModal()">Cancel</button>
+      <div class="actions">
+        <button class="btn" onclick="saveItem()">Save</button>
+        <button class="btn" onclick="closeModal()">Cancel</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    let items = JSON.parse(localStorage.getItem("inventory")) || [
-      { name: "Oil Filter", desc: "Engine oil filter", qty: 10, cost: 15 },
-      { name: "Brake Pad", desc: "Front brake pad", qty: 2, cost: 45 },
-      { name: "Air Filter", desc: "Cabin air filter", qty: 0, cost: 12 }
-    ];
-    let editingIndex = -1;
+<script>
+let items = JSON.parse(localStorage.getItem("inventory")) || [
+  { name: "Oil Filter", desc: "Engine oil filter", qty: 10, cost: 15 },
+  { name: "Brake Pad", desc: "Front brake pad", qty: 2, cost: 45 },
+  { name: "Air Filter", desc: "Cabin air filter", qty: 0, cost: 12 }
+];
+let editingIndex = -1;
 
-    function renderInventory() {
-      const threshold = parseInt(document.getElementById('threshold').value) || 3;
-      const filter = document.getElementById('search').value.toLowerCase();
-      const tbody = document.getElementById('inventory-body');
-      let totalQty = 0, totalCost = 0;
+function getStatusIcon(qty, threshold) {
+  if (qty === 0) return '<span class="status-icon out">❌</span>';
+  if (qty <= threshold) return '<span class="status-icon low">⚠️</span>';
+  return '<span class="status-icon ok">✅</span>';
+}
 
-      tbody.innerHTML = '';
-      items.forEach((item, index) => {
-        if (!item.name.toLowerCase().includes(filter)) return;
-        const status = item.qty === 0 ? 'out' : item.qty <= threshold ? 'low' : 'ok';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.desc}</td>
-          <td>${item.qty}</td>
-          <td>$${item.cost.toFixed(2)}</td>
-          <td><span class="status-${status}">${status.toUpperCase()}</span></td>
-          <td>
-            <button class="btn" onclick="editItem(${index})">Edit</button>
-            <button class="btn" onclick="deleteItem(${index})">Delete</button>
-          </td>
-        `;
-        totalQty += item.qty;
-        totalCost += item.qty * item.cost;
-        tbody.appendChild(tr);
-      });
+function getStatusKey(qty, threshold) {
+  if (qty === 0) return "out";
+  if (qty <= threshold) return "low";
+  return "ok";
+}
 
-      document.getElementById('totalQty').textContent = totalQty;
-      document.getElementById('totalCost').textContent = `$${totalCost.toFixed(2)}`;
-      localStorage.setItem("inventory", JSON.stringify(items));
+
+let currentSort = { key: null, direction: 1 };
+
+function sortItems(key) {
+  if (currentSort.key === key) {
+    currentSort.direction *= -1;
+  } else {
+    currentSort.key = key;
+    currentSort.direction = 1;
+  }
+
+  items.sort((a, b) => {
+    const aVal = a[key];
+    const bVal = b[key];
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      return aVal.localeCompare(bVal) * currentSort.direction;
+    } else {
+      return (aVal - bVal) * currentSort.direction;
     }
+  });
 
-    function openModal(mode) {
-      editingIndex = mode === 'add' ? -1 : editingIndex;
-      document.getElementById('modal-title').textContent = mode === 'add' ? 'Add Item' : 'Edit Item';
-      document.getElementById('modal').style.display = 'flex';
-      const fields = ['itemName', 'itemDesc', 'itemQty', 'itemCost'];
-      if (editingIndex !== -1) {
-        const item = items[editingIndex];
-        document.getElementById('itemName').value = item.name;
-        document.getElementById('itemDesc').value = item.desc;
-        document.getElementById('itemQty').value = item.qty;
-        document.getElementById('itemCost').value = item.cost;
-      } else {
-        fields.forEach(id => document.getElementById(id).value = '');
-      }
-    }
+  renderInventory();
+  updateSortIcons();
+}
 
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
 
-    function saveItem() {
-      const name = document.getElementById('itemName').value.trim();
-      const desc = document.getElementById('itemDesc').value.trim();
-      const qty = parseInt(document.getElementById('itemQty').value.trim());
-      const cost = parseFloat(document.getElementById('itemCost').value.trim());
+function updateSortIcons() {
+  const ths = document.querySelectorAll('th.sortable');
+  ths.forEach(th => {
+    const key = th.getAttribute("data-key");
+    const arrow = (currentSort.key === key)
+      ? (currentSort.direction > 0 ? "⬆" : "⬇")
+      : "⬍";
+    th.innerHTML = th.getAttribute("data-label") + " " + arrow;
+  });
+}
 
-      if (!name || isNaN(qty) || isNaN(cost)) return alert("All fields are required.");
-      const exists = items.find((item, i) => item.name.toLowerCase() === name.toLowerCase() && i !== editingIndex);
-      if (exists) return alert("Item name must be unique.");
+function renderInventory() {
+  const threshold = parseInt(document.getElementById('threshold').value) || 3;
+  const filter = document.getElementById('search').value.toLowerCase();
+  const statusFilter = document.getElementById('statusFilter').value;
+  const tbody = document.getElementById('inventory-body');
+  let totalQty = 0, totalCost = 0;
 
-      if (editingIndex === -1) {
-        items.push({ name, desc, qty, cost });
-      } else {
-        items[editingIndex] = { name, desc, qty, cost };
-      }
-      closeModal();
-      renderInventory();
-    }
+  tbody.innerHTML = '';
+  let visibleCount = 0;
+  items.forEach((item, index) => {
+    const matchesSearch = !filter || item.name.toLowerCase().includes(filter);
+    const itemStatus = getStatusKey(item.qty, threshold);
+    const matchesStatus = statusFilter === 'all' || itemStatus === statusFilter;
+    if (!matchesSearch || !matchesStatus) return;
 
-    function editItem(index) {
-      editingIndex = index;
-      openModal('edit');
-    }
+    const statusIcon = getStatusIcon(item.qty, threshold);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.desc}</td>
+      <td>${item.qty}</td>
+      <td>$${item.cost.toFixed(2)}</td>
+      <td>${statusIcon}</td>
+      <td>
+        <div class="actions">
+          <button class="btn" onclick="editItem(${index})">Edit</button>
+          <button class="btn" onclick="deleteItem(${index})">Delete</button>
+        </div>
+      </td>
+    `;
+    totalQty += item.qty;
+    totalCost += item.qty * item.cost;
+    tbody.appendChild(tr);
+    visibleCount++;
+  });
 
-    function deleteItem(index) {
-      if (confirm("Delete this item?")) {
-        items.splice(index, 1);
-        renderInventory();
-      }
-    }
+  document.getElementById('totalQty').textContent = totalQty;
+  document.getElementById('totalCost').textContent = `$${totalCost.toFixed(2)}`;
+  document.getElementById("itemCount").textContent = `${visibleCount} item(s) shown`;
+  localStorage.setItem("inventory", JSON.stringify(items));
+}
 
-    function exportCSV() {
-      const headers = ["Item Name", "Description", "Quantity", "Cost"];
-      const rows = items.map(i => [i.name, i.desc, i.qty, i.cost.toFixed(2)]);
-      const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "inventory.csv";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+function openModal(mode) {
+  editingIndex = mode === 'add' ? -1 : editingIndex;
+  document.getElementById('modal-title').textContent = mode === 'add' ? 'Add Item' : 'Edit Item';
+  document.getElementById('modal').style.display = 'flex';
+  const fields = ['itemName', 'itemDesc', 'itemQty', 'itemCost'];
+  if (editingIndex !== -1) {
+    const item = items[editingIndex];
+    document.getElementById('itemName').value = item.name;
+    document.getElementById('itemDesc').value = item.desc;
+    document.getElementById('itemQty').value = item.qty;
+    document.getElementById('itemCost').value = item.cost;
+  } else {
+    fields.forEach(id => document.getElementById(id).value = '');
+  }
+}
 
-    renderInventory();
-  
-function importCSV() {
-  const input = document.getElementById('importFile');
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const lines = e.target.result.split("\n").slice(1);
-    lines.forEach(line => {
-      const [name, desc, qty, cost] = line.split(",");
-      if (!name || items.some(i => i.name === name)) return;
-      items.push({ name, desc, qty: parseInt(qty), cost: parseFloat(cost) });
-    });
-    localStorage.setItem("inventory", JSON.stringify(items));
-    renderInventory();
-  };
-  reader.readAsText(file);
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function saveItem() {
+  const name = document.getElementById('itemName').value.trim();
+  const desc = document.getElementById('itemDesc').value.trim();
+  const qty = parseInt(document.getElementById('itemQty').value.trim());
+  const cost = parseFloat(document.getElementById('itemCost').value.trim());
+
+  if (!name || isNaN(qty) || isNaN(cost)) return alert("All fields are required.");
+  const exists = items.find((item, i) => item.name.toLowerCase() === name.toLowerCase() && i !== editingIndex);
+  if (exists) return alert("Item name must be unique.");
+
+  if (editingIndex === -1) {
+    items.push({ name, desc, qty, cost });
+  } else {
+    items[editingIndex] = { name, desc, qty, cost };
+  }
+  closeModal();
+  renderInventory();
+    updateSortIcons();
+}
+
+function editItem(index) {
+  editingIndex = index;
+  openModal('edit');
 }
 
 function deleteItem(index) {
@@ -212,8 +297,42 @@ function deleteItem(index) {
   }
   items.splice(index, 1);
   renderInventory();
+    updateSortIcons();
 }
 
+function exportCSV() {
+  const headers = ["Item Name", "Description", "Quantity", "Cost"];
+  const rows = items.map(i => [i.name, i.desc, i.qty, i.cost.toFixed(2)]);
+  const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "inventory.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split("\n").slice(1);
+    lines.forEach(line => {
+      const [name, desc, qty, cost] = line.split(",");
+      if (!name || items.some(i => i.name === name.trim())) return;
+      items.push({ name, desc, qty: parseInt(qty), cost: parseFloat(cost) });
+    });
+    localStorage.setItem("inventory", JSON.stringify(items));
+    renderInventory();
+    updateSortIcons();
+  };
+  reader.readAsText(file);
+}
+
+renderInventory();
+    updateSortIcons();
 </script>
 </body>
 </html>

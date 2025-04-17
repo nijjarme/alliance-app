@@ -1,0 +1,178 @@
+/* === Base === */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #1e293b;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links a {
+  color: white;
+  margin-left: 1rem;
+  text-decoration: none;
+}
+
+.subnav {
+  position: sticky;
+  top: 48px;
+  z-index: 999;
+  background: #e2e8f0;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* === Buttons === */
+.btn {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  background: #007acc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #0369a1;
+}
+
+/* === Layout === */
+.container {
+  display: flex;
+  flex: 1;
+  padding: 3rem 2rem 2rem;
+}
+
+.sidebar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  padding: 1rem;
+  margin: 1rem;
+  font-size: 0.95rem;
+  color: #1f2937;
+  width: 250px;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+}
+
+.details {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* === Customer Module === */
+.parent {
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 600;
+  margin-top: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.25rem;
+}
+
+.child {
+  margin-left: 1rem;
+  margin-top: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 0.92rem;
+}
+
+.child:hover {
+  background: #f0f4f8;
+}
+
+.selected {
+  background: #e0f2fe;
+  font-weight: 500;
+  color: #0c4a6e;
+}
+
+/* === Modal === */
+.modal {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 35%;
+  background: #fff;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  border-radius: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* === Inputs === */
+input[type="text"], input[type="number"], select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* === Inventory Table === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background: #f1f5f9;
+}
+
+.status-icon {
+  font-size: 1.25rem;
+}
+
+.ok { color: green; }
+.low { color: orange; }
+.out { color: red; }
+
+/* === Utility === */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}

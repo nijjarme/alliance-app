@@ -1,385 +1,56 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Alliance App - Customers v10.2</title>
-  
-<style>
-.layout {
-  display: flex;
-  width: 100%;
-}
-.sidebar {
-  width: 25%;
-}
-.main {
-  width: 75%;
-  padding: 1rem;
-}
-
-<style>
-body {
-  background: #f6f8fa;
-}
-.sidebar {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  padding: 1rem;
-  margin: 1rem;
-  font-size: 0.95rem;
-  color: #1f2937;
-
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  margin: 1rem;
-  padding: 1rem;
-}
-.parent {
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 600;
-  margin-top: 2rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.25rem;
-
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 600;
-  margin-top: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.25rem;
-}
-.child {
-  margin-left: 1rem;
-  margin-top: 0.25rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 0.92rem;
-
-  margin-left: 1rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  margin-left: 1rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-.child:hover {
-  background: #f0f4f8;
-}
-.selected {
-  background: #e0f2fe;
-  font-weight: 500;
-  color: #0c4a6e;
-
-  background: #dbeafe;
-  font-weight: 500;
-}
-
-<style>
-body { background: #f6f8fa; }
-
-
-
-
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  width: 90%;
-  max-width: 400px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 1000;
-}
-.modal label {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-  margin-top: 0.75rem;
-  color: #6b7280;
-}
-.modal input,
-.modal select {
-  width: 100%;
-  padding: 0.55rem 0.6rem;
-  margin-bottom: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-}
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal button {
-  padding: 0.4rem 0.75rem;
-  margin-top: 0.5rem;
-  border-radius: 6px;
-}
-
-</style>
-
-<style>
-body { background: #f6f8fa; }
-
-
-
-
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  width: 90%;
-  max-width: 400px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 1000;
-}
-.modal label {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-  margin-top: 0.75rem;
-  color: #6b7280;
-}
-.modal input,
-.modal select {
-  width: 100%;
-  padding: 0.55rem 0.6rem;
-  margin-bottom: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-}
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal input::placeholder {
-  color: #9ca3af;
-}
-.modal button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.modal button {
-  padding: 0.4rem 0.75rem;
-  margin-top: 0.5rem;
-  border-radius: 6px;
-}
-
-</style>
-<style>
-body { background: #f6f8fa; }
-
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    .nav-primary {
-      background: #004aad;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-    }
-    .nav-primary a {
-      color: white;
-      text-decoration: none;
-      margin-right: 1rem;
-    }
-    .nav-secondary {
-      background: #e8f0fe;
-      padding: 0.5rem 1rem;
-      display: flex;
-      gap: 1rem;
-    }
-    .main-content {
-      display: flex;
-      flex: 1;
-    }
-    .sidebar {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  padding: 1rem;
-  margin: 1rem;
-  font-size: 0.95rem;
-  color: #1f2937;
-
-      width: 250px;
-      border-right: 1px solid #ccc;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-    .details {
-      flex: 1;
-      padding: 1rem;
-    }
-    .parent {
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 600;
-  margin-top: 2rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.25rem;
-
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-    .child {
-  margin-left: 1rem;
-  margin-top: 0.25rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 0.92rem;
-
-  margin-left: 1rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-      margin-left: 1rem;
-      cursor: pointer;
-    }
-    .child:hover {
-      background: #e2e8f0;
-    }
-    .selected {
-  background: #e0f2fe;
-  font-weight: 500;
-  color: #0c4a6e;
-
-      background: #cbd5e1;
-    }
-    .btn {
-      font-size: 1.001rem;
-      padding: 0.5rem 1rem;
-      background: #007acc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-      position: fixed;
-      top: 20%;
-      left: 35%;
-      background: white;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-      display: none;
-    }
-  </style>
+<meta charset="utf-8"/>
+<title>Alliance App - Customers v1.1</title>
+<link href="public/style.css" rel="stylesheet"/>
 </head>
 <body>
-
 <div id="header"></div>
 <script>
   fetch("header.html")
     .then(r => r.text())
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
-
-
-    
-  </div>
-  <div class="nav-secondary" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; background: #e8f0fe;">
-  <div><strong>Customers</strong></div>
-  <div>
-    <button class="btn" onclick="openModal('add')">Add Truck</button>
-    <button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
-  </div>
+<div class="subnav">
+<div><strong>Customers</strong></div>
+<div>
+<button class="btn" onclick="openModal('add')">Add Truck</button>
+<button class="btn" onclick="openParentModal()">Manage Parent Customers</button>
 </div>
+</div>
+<div class="container">
+<div class="sidebar" id="list"></div>
+<div class="details">
+<h2>Customer Details</h2>
+<div id="details">Select a truck from the list</div>
+</div>
+</div>
+<!-- Truck Modal -->
+<div class="modal" id="modal" style="display:none;">
+<div class="modal-content">
+<h3 id="modal-title">Add Truck</h3>
+<input id="newId" placeholder="Truck ID"/><br/>
+<select id="newParent"></select><br/>
+<input id="newVin" placeholder="VIN"/><br/>
+<input id="newLicense" placeholder="License Plate"/><br/>
+<input id="newMake" placeholder="Make/Model"/><br/>
 
-  <div class="main-content">
-    <div class="sidebar" id="list"></div>
-    <div class="details">
-      <h2>Customer Details</h2>
-      <div id="details">Select a truck from the list</div>
-    </div>
-  </div>
 
-  <!-- Truck Modal -->
-  <div id="modal" class="modal">
-    <h3 id="modal-title">Add Truck</h3>
-    <input id="newId" placeholder="Truck ID" /><br>
-    <select id="newParent"></select><br>
-    <input id="newVin" placeholder="VIN" /><br>
-    <input id="newLicense" placeholder="License Plate" /><br>
-    <input id="newMake" placeholder="Make/Model" /><br>
-    <button class="btn" onclick="saveCustomer()">Save</button>
-    <button class="btn" onclick="closeModal()">Cancel</button>
-  </div>
+<div class="actions"><button class="btn" onclick="saveCustomer()">Save</button><button class="btn" onclick="closeModal()">Cancel</button></div></div>
+</div>
+<!-- Parent Modal -->
+<div class="modal" id="parentModal" style="display:none;">
+<div class="modal-content">
+<h3>Manage Parent Customers</h3>
+<input id="newParentName" placeholder="Parent Customer Name"/>
 
-  <!-- Parent Modal -->
-  <div id="parentModal" class="modal">
-    <h3>Manage Parent Customers</h3>
-    <input id="newParentName" placeholder="Parent Customer Name" />
-    <button class="btn" onclick="addParent()">Add</button>
-    <ul id="parentList"></ul>
-    <button class="btn" onclick="closeParentModal()">Done</button>
-  </div>
+<ul id="parentList"></ul>
 
-  <script>
+<div class="actions"><button class="btn" onclick="addParent()">Add</button><button class="btn" onclick="closeParentModal()">Done</button></div></div>
+</div>
+<script>
     let customers = JSON.parse(localStorage.getItem("customers")) || [];
     let parents = JSON.parse(localStorage.getItem("parents")) || ["ALLIANCE"];
     let selectedId = null;
@@ -536,10 +207,6 @@ function updateDetails() {
 
     renderList();
   </script>
-
-
-
-
 <script>
 function enableEdit() {
   const truck = customers.find(c => c.id === selectedId);
@@ -565,6 +232,5 @@ function saveEdit() {
   updateDetails();
 }
 </script>
-
 </body>
 </html>

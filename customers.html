@@ -13,7 +13,7 @@
     .then(r => r.text())
     .then(t => document.getElementById("header").innerHTML = t);
 </script>
-<div class="subnav">
+<div class="nav-secondary">
 <div><strong>Customers</strong></div>
 <div>
 <button class="btn" onclick="openModal('add')">Add Truck</button>
@@ -28,7 +28,7 @@
 </div>
 </div>
 <!-- Truck Modal -->
-<div class="modal" id="modal" style="display:none;">
+<div class="modal" id="modal" class="hidden">
 <div class="modal-content">
 <h3 id="modal-title">Add Truck</h3>
 <input id="newId" placeholder="Truck ID"/><br/>
@@ -41,7 +41,7 @@
 <div class="actions"><button class="btn" onclick="saveCustomer()">Save</button><button class="btn" onclick="closeModal()">Cancel</button></div></div>
 </div>
 <!-- Parent Modal -->
-<div class="modal" id="parentModal" style="display:none;">
+<div class="modal" id="parentModal" class="hidden">
 <div class="modal-content">
 <h3>Manage Parent Customers</h3>
 <input id="newParentName" placeholder="Parent Customer Name"/>
@@ -93,17 +93,17 @@ function updateDetails() {
   const c = customers.find(c => c.id === selectedId);
   if (!c) return;
   details.innerHTML = `
-    <div style="background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 1.5rem; margin-top: 1rem; overflow-x: auto;">
-      <div style="display: grid; grid-template-columns: 10% 15% 25% 20% 20% 10%; align-items: center; font-size: 0.8rem; color: #6b7280; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.25rem;">
+    <div class="card">
+      <div class="grid-row grid-header">
         <div>Truck ID</div><div>Parent</div><div>VIN</div><div>License Plate</div><div>Make/Model</div><div></div>
       </div>
-      <div style="display: grid; grid-template-columns: 10% 15% 25% 20% 20% 10%; font-size: 0.95rem; color: #374151; padding-top: 0.5rem;">
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.id}">${c.id}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.parent}">${c.parent}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.vin}">${c.vin}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.license}">${c.license}</div>
-        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.make}">${c.make}</div>
-        <div><button class="btn" style="padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 999px;" onclick="openModal('edit')">Edit</button></div>
+      <div class="grid-row grid-item">
+        <div class="truncate" title="${c.id}">${c.id}</div>
+        <div class="truncate" title="${c.parent}">${c.parent}</div>
+        <div class="truncate" title="${c.vin}">${c.vin}</div>
+        <div class="truncate" title="${c.license}">${c.license}</div>
+        <div class="truncate" title="${c.make}">${c.make}</div>
+        <div><button class="btn" class="pill-label" onclick="openModal('edit')">Edit</button></div>
       </div>
     </div>
   `;

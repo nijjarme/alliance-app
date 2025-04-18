@@ -7,13 +7,18 @@
   <link href="public/style.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="container">
+<div class="navbar">
+  <div>Alliance App</div>
+  <div style="font-size: 0.9rem; opacity: 0.7;">v1.2</div>
+</div>
+
+<div class="container-index">
   <div class="login-box">
     <h1>Alliance App</h1>
     <p>Login</p>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
+    <button class="btn" onclick="login()">Login</button>
     <div class="msg" id="msg"></div>
     <a href='customers.html'>Continue to Customers →</a>
   </div>

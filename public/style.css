@@ -336,7 +336,7 @@ table {
 }
 .sticky-mask {
   position: fixed;
-  top: 96px;
+  top: 104px;
   left: 0;
   right: 0;
   height: 24px;

@@ -9,12 +9,12 @@
 
 <link href="style.css" rel="stylesheet"/></head>
 <body>
-<div id="header">
+<div id="header"></div>
 <script>
   fetch("header.html")
     .then(r => r.text())
     .then(t => document.getElementById("header").innerHTML = t);
-</script></div>
+</script>
 <div class="nav-secondary">
 <div><strong>Inventory</strong></div>
 <div class="actions">

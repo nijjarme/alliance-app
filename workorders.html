@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Work Orders v1.1</title>
-  <link rel="stylesheet" href="style.css">
+  <link href="public/style.css" rel="stylesheet"/>
 </head>
 <body>
   <div id="header"></div>
@@ -12,83 +12,13 @@
     fetch("header.html").then(r => r.text()).then(t => document.getElementById("header").innerHTML = t);
   </script>
 
-  <div class="subnav"><h2>Work Orders</h2></div>
-  <div class="subnav" style="background-color:#cbd5e1;"></div>
-
-  <div class="main">
-    <button onclick="openModal()">+ Add Work Order</button>
-    <table id="woTable"><thead><tr><th>WO #</th><th>Truck</th><th>Date</th><th>Total</th></tr></thead><tbody></tbody></table>
-  </div>
-
-  <div id="woModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h3>New Work Order</h3>
-      <form id="woForm" onsubmit="saveWorkOrder(event)">
-        <label>WO # <input required id="woNumber"></label>
-        <label>Date <input type="date" required id="woDate"></label>
-        <label>Truck <select id="woTruck" required></select></label>
-        <label>Odometer <input type="number" id="woOdo"></label>
-
-        <div id="woItems"></div>
-        <button type="button" onclick="addItem()">+ Add Item</button>
-
-        <div>Total (incl. tax): $<span id="woTotal">0.00</span></div>
-        <button type="submit">Save</button>
-        <button type="button" onclick="closeModal()">Cancel</button>
-      </form>
+<div class="subnav">
+    <div><strong>Work Orders</strong></div>
+    <div>
+    <button class="btn" onclick="openModal()">Add Work Orders</button>
+    <button class="btn" onclick="openModal()">Manage Work Orders</button>
     </div>
-  </div>
-
-  <script>
-    const inventory = JSON.parse(localStorage.getItem("inventory") || "[]");
-    const customers = JSON.parse(localStorage.getItem("customers") || "[]");
-
-    function openModal() {
-      document.getElementById("woForm").reset();
-      document.getElementById("woTruck").innerHTML = customers.map(c => 
-        `<option value="\${c.name}">\${c.name}</option>`
-      ).join("");
-      document.getElementById("woItems").innerHTML = "";
-      addItem(); // start with one row
-      updateTotal();
-      document.getElementById("woModal").style.display = "block";
-    }
-
-    function closeModal() {
-      document.getElementById("woModal").style.display = "none";
-    }
-
-    function addItem() {
-      const row = document.createElement("div");
-      row.innerHTML = \`
-        <select onchange="updateTotal()">
-          <option value="">-- Select Item --</option>
-          \${inventory.map(i => `<option value="\${i.name}" data-cost="\${i.cost}">\${i.name}</option>`).join("")}
-        </select>
-        <input type="number" min="1" value="1" onchange="updateTotal()">
-      \`;
-      document.getElementById("woItems").appendChild(row);
-    }
-
-    function updateTotal() {
-      const rows = document.querySelectorAll("#woItems div");
-      let total = 0;
-      rows.forEach(div => {
-        const select = div.querySelector("select");
-        const qty = parseFloat(div.querySelector("input").value || 0);
-        const cost = parseFloat(select.selectedOptions[0]?.dataset.cost || 0);
-        total += qty * cost;
-      });
-      total *= 1.13; // add 13% tax
-      document.getElementById("woTotal").textContent = total.toFixed(2);
-    }
-
-    function saveWorkOrder(e) {
-      e.preventDefault();
-      // Placeholder: saving will be added in v1.2
-      alert("Work order saved! (stub)");
-      closeModal();
-    }
-  </script>
+</div>
+<div class="container">test</div>
 </body>
 </html>

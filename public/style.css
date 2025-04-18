@@ -4,7 +4,19 @@ body {
   margin: 0;
   background: #f8fafc;
   color: #1e293b;
+  padding-top: 48px;
 }
+
+/* === Header Position Fix === */
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  background: #1e293b; /* matches header background */
+}
+
 
 .navbar {
   position: sticky;
@@ -336,7 +348,7 @@ table {
 }
 .sticky-mask {
   position: fixed;
-  top: 104px;
+  top: 105px;
   left: 0;
   right: 0;
   height: 24px;
